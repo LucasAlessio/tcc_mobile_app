@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:tcc/exceptions/unauthorized_exception.dart';
 import 'package:tcc/exceptions/validation_exception.dart';
 import 'package:tcc/services/questionnaires_service.dart';
 
@@ -30,12 +31,15 @@ class AnswerCubit extends Cubit<AnswerStates?> {
       emit(AnswerSuccess());
     } on ValidationException catch (error) {
       emit(AnswerValidationError(error.errors));
+    } on UnauthorizedException catch (error) {
+      emit(AnswerError(error.message, unauthorized: true));
     } on HttpException catch (error) {
       emit(AnswerError(error.message));
+    } on SocketException catch (_) {
+      emit(
+          AnswerError("Verifique se o dispositivo está conectado à internet."));
     } catch (error) {
-      emit(AnswerError("Ocorreu um erro ao atualizar o perfil"));
+      emit(AnswerError("Ocorreu um erro ao submter as respostas."));
     }
   }
-
-  // Future<void> saveProfile({required })
 }

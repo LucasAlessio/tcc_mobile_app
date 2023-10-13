@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logger/logger.dart';
 
 class LoggingInterceptor implements InterceptorContract {
-  final BuildContext? context;
   final Logger logger = Logger();
-
-  LoggingInterceptor(this.context) : super();
 
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
@@ -31,11 +27,6 @@ class LoggingInterceptor implements InterceptorContract {
     } else {
       logger.e(log);
     }
-
-    // if (data.statusCode == HttpStatus.unauthorized) {
-    //   Navigator.pushReplacementNamed(
-    //       AppConfig.navigatorState.currentContext!, '/login');
-    // }
 
     return data;
   }

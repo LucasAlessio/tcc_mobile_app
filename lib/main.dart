@@ -93,7 +93,7 @@ class App extends StatelessWidget {
             routes: {
               '/': (context) => const AppDrawer(),
               '/login': (context) => const LoginScreen(),
-              '/register': (context) => const RegisterScreen(),
+              '/register': (context) => RegisterScreen(),
             },
             onGenerateRoute: (settings) {
               if (settings.name == "questionnaire") {

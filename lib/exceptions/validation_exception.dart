@@ -6,7 +6,12 @@ class ValidationException implements Exception {
   ValidationException(this._errors);
 
   factory ValidationException.fromErrorResponse(String raw) {
-    Map<String, dynamic> response = json.decode(raw);
+    Map<String, dynamic> response;
+    try {
+      response = json.decode(raw);
+    } catch (_) {
+      response = {};
+    }
     Map<String, dynamic> errors = {};
 
     for (var e

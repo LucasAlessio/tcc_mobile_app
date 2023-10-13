@@ -1,44 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tcc/services/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tcc/components/alert.dart';
+import 'package:tcc/logic/cubit/app_data_cubit.dart';
+import 'package:tcc/logic/cubit/logout_cubit.dart';
 
-class LogoutButton extends StatefulWidget {
-  const LogoutButton({Key? key}) : super(key: key);
+class LogoutButton extends StatelessWidget {
+  final LogoutCubit _bloc = LogoutCubit();
 
-  @override
-  State<LogoutButton> createState() => _LogoutButtonState();
-}
-
-class _LogoutButtonState extends State<LogoutButton> {
-  bool _isLoading = false;
-  AuthService authService = AuthService();
+  LogoutButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-      child: _isLoading
-          ? const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 14, bottom: 14),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
+      child: BlocListener<LogoutCubit, LogoutStates?>(
+        bloc: _bloc,
+        listener: (context, state) {
+          if (state is LogoutSuccess) {
+            AppDataCubit appData = context.read<AppDataCubit>();
+            appData.clearData();
+
+            Navigator.pushReplacementNamed(context, '/login');
+          }
+
+          if (state is LogoutError) {
+            alert(
+              context: context,
+              title: "Efetuar logout",
+              message: state.message,
+              buttonText: "Ok",
+            );
+          }
+        },
+        child: BlocBuilder<LogoutCubit, LogoutStates?>(
+          bloc: _bloc,
+          builder: (context, state) {
+            if (state is LogoutLoading) {
+              return const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 14, bottom: 14),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 16,
-                ),
-                Text('efetuando logout...'),
-              ],
-            )
-          : OutlinedButton(
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Text('efetuando logout...'),
+                ],
+              );
+            }
+
+            return OutlinedButton(
               onPressed: () {
                 logout(context);
               },
@@ -49,25 +69,19 @@ class _LogoutButtonState extends State<LogoutButton> {
                 ),
               ),
               child: const Text('Sair'),
-            ),
+            );
+          },
+        ),
+      ),
     );
   }
 
-  Future<void> logout(BuildContext context) async {
-    setState(() {
-      _isLoading = !_isLoading;
-    });
+  void logout(BuildContext context) {
+    AppDataCubit appData = context.read<AppDataCubit>();
+    AppDataStates? data = appData.state;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('access_token') ?? "";
+    if (data is! AppDataAuthenticated) return;
 
-    try {
-      await authService.logout(token: token);
-
-      if (!context.mounted) return;
-      Navigator.pushReplacementNamed(context, '/login');
-    } catch (error) {
-      return;
-    }
+    _bloc.logout(token: data.token);
   }
 }

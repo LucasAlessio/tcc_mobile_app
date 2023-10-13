@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:tcc/exceptions/validation_exception.dart';
 import 'package:tcc/models/alternative.dart';
 import 'package:tcc/models/question.dart';
 import 'package:tcc/models/questionnaire.dart';
@@ -23,12 +21,7 @@ class QuestionnairesService {
       },
     );
 
-    if (response.statusCode >= 300) {
-      throw HttpException(response.body);
-    }
-
     List<dynamic> raw = json.decode(response.body);
-
     List<Questionnaire> questionnaires = [];
 
     for (Map<String, dynamic> map in raw) {
@@ -51,12 +44,6 @@ class QuestionnairesService {
     );
 
     Map<String, dynamic> raw = json.decode(response.body);
-
-    if (response.statusCode >= 300) {
-      print(raw);
-      throw HttpException(raw["message"] ??
-          "Ocorreu um erro ao obter as informações do instrumento");
-    }
 
     Questionnaire questionnaire;
 
@@ -86,7 +73,7 @@ class QuestionnairesService {
     required String token,
     required Map<String, dynamic> data,
   }) async {
-    http.Response response = await client.post(
+    await client.post(
       Uri.parse("${url}questionnaires/$id/answer/"),
       headers: {
         "Authorization": "Bearer $token",
@@ -94,13 +81,5 @@ class QuestionnairesService {
       },
       body: json.encode(data),
     );
-
-    if (response.statusCode >= 300) {
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        throw ValidationException.fromErrorResponse(response.body);
-      }
-
-      throw HttpException(response.body);
-    }
   }
 }

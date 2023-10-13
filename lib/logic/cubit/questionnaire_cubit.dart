@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:tcc/exceptions/unauthorized_exception.dart';
 import 'package:tcc/models/questionnaire.dart';
 import 'package:tcc/services/questionnaires_service.dart';
 
@@ -22,11 +23,15 @@ class QuestionnaireCubit extends Cubit<QuestionnaireStates?> {
     try {
       Questionnaire data = await service.getById(id: id, token: token);
       emit(QuestionnaireSuccess(data));
+    } on UnauthorizedException catch (error) {
+      emit(QuestionnaireError(error.message, unauthorized: true));
     } on HttpException catch (error) {
       emit(QuestionnaireError(error.message));
-    } catch (error) {
+    } on SocketException catch (_) {
       emit(QuestionnaireError(
-          "Ocorreu um erro ao carregar as informações do instrumento"));
+          "Verifique se o dispositivo está conectado à internet."));
+    } catch (error) {
+      emit(QuestionnaireError("Ocorreu um erro ao carregar os instrumentos."));
     }
   }
 }

@@ -7,9 +7,13 @@ class AnswerLoading extends AnswerStates {}
 class AnswerSuccess extends AnswerStates {}
 
 class AnswerError extends AnswerStates {
+  bool unauthorized;
   String message;
 
-  AnswerError(this.message);
+  AnswerError(
+    this.message, {
+    this.unauthorized = false,
+  });
 }
 
 class AnswerValidationError extends AnswerStates {

@@ -1,9 +1,10 @@
+import 'package:tcc/enums/question_type.dart';
 import 'package:tcc/models/alternative.dart';
 
 class Question {
   int id;
   String description;
-  String type;
+  QuestionType type;
   DateTime createdAt;
   DateTime updatedAt;
   final List<Alternative> _alternatives = [];
@@ -19,7 +20,7 @@ class Question {
   Question.fromMap(Map<String, dynamic> map)
       : id = map["id"],
         description = map["description"],
-        type = map["type"],
+        type = QuestionType.getFromValue(map["type"]),
         createdAt = DateTime.parse(map["created_at"]),
         updatedAt = DateTime.parse(map["updated_at"]);
 

@@ -12,7 +12,11 @@ class QuestionnairesSuccess extends QuestionnairesStates {
 }
 
 class QuestionnairesError extends QuestionnairesStates {
+  bool unauthorized;
   String message;
 
-  QuestionnairesError(this.message);
+  QuestionnairesError(
+    this.message, {
+    this.unauthorized = false,
+  });
 }

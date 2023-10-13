@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:tcc/exceptions/unauthorized_exception.dart';
 import 'package:tcc/exceptions/validation_exception.dart';
 import 'package:tcc/services/auth_service.dart';
 
@@ -21,15 +22,20 @@ class UpdateProfileCubit extends Cubit<UpdateProfileStates?> {
     emit(UpdateProfileLoading());
 
     try {
-      await service.saveProfile(
+      await service.updateProfile(
         token: token,
         data: data,
       );
       emit(UpdateProfileSuccess());
     } on ValidationException catch (error) {
       emit(UpdateProfileValidationError(error.errors));
+    } on UnauthorizedException catch (error) {
+      emit(UpdateProfileError(error.message, unauthorized: true));
     } on HttpException catch (error) {
       emit(UpdateProfileError(error.message));
+    } on SocketException catch (_) {
+      emit(UpdateProfileError(
+          "Verifique se o dispositivo está conectado à internet."));
     } catch (error) {
       emit(UpdateProfileError("Ocorreu um erro ao atualizar o perfil"));
     }

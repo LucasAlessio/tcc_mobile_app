@@ -32,4 +32,8 @@ class AppDataCubit extends Cubit<AppDataStates?> {
       expiresAt: expiresAt,
     ));
   }
+
+  clearData() {
+    emit(AppDataUnauthenticated());
+  }
 }

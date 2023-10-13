@@ -12,7 +12,11 @@ class ProfileSuccess extends ProfileStates {
 }
 
 class ProfileError extends ProfileStates {
+  bool unauthorized;
   String message;
 
-  ProfileError(this.message);
+  ProfileError(
+    this.message, {
+    this.unauthorized = false,
+  });
 }

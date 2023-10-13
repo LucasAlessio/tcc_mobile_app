@@ -7,9 +7,13 @@ class UpdateProfileLoading extends UpdateProfileStates {}
 class UpdateProfileSuccess extends UpdateProfileStates {}
 
 class UpdateProfileError extends UpdateProfileStates {
+  bool unauthorized;
   String message;
 
-  UpdateProfileError(this.message);
+  UpdateProfileError(
+    this.message, {
+    this.unauthorized = false,
+  });
 }
 
 class UpdateProfileValidationError extends UpdateProfileStates {

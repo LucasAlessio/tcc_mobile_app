@@ -5,12 +5,30 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tcc/enums/local_storage_key.dart';
-import 'package:tcc/exceptions/validation_exception.dart';
 import 'package:tcc/services/web_client.dart';
 
 class AuthService {
   String url = WebClient.url;
   http.Client client = WebClient.client;
+  http.Client unauthorizedClient = WebClient.unauthorizedClient;
+
+  Future<void> login({required Map<String, dynamic> data}) async {
+    Map<String, dynamic> body = {
+      ...data,
+      'device_name': await _getDeviceName(),
+    };
+
+    http.Response response = await unauthorizedClient.post(
+      Uri.parse("${url}login"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: json.encode(body),
+    );
+
+    Map<String, dynamic> r = json.decode(response.body);
+    await _saveUserInfo(r);
+  }
 
   Future<void> register({required Map<String, dynamic> data}) async {
     Map<String, dynamic> body = {
@@ -18,42 +36,26 @@ class AuthService {
       'device_name': await _getDeviceName(),
     };
 
-    http.Response response = await client.post(
+    http.Response response = await unauthorizedClient.post(
       Uri.parse("${url}register"),
       headers: {
-        // "Authorization": "Bearer $token",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: json.encode(body),
     );
 
-    if (response.statusCode >= 300) {
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        throw ValidationException.fromErrorResponse(response.body);
-      }
-
-      throw HttpException(response.body);
-    }
-
-    await _saveUserInfo(response.body);
+    Map<String, dynamic> r = json.decode(response.body);
+    await _saveUserInfo(r);
   }
 
   Future<void> logout({required String token}) async {
-    http.Response response = await client.post(
+    await client.post(
       Uri.parse("${url}logout"),
       headers: {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
     );
-
-    if (response.statusCode >= 300) {
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        throw ValidationException.fromErrorResponse(response.body);
-      }
-
-      throw HttpException(response.body);
-    }
 
     await _deleteUserInfo();
   }
@@ -67,18 +69,14 @@ class AuthService {
       },
     );
 
-    if (response.statusCode >= 300) {
-      throw HttpException(response.body);
-    }
-
-    return jsonDecode(response.body);
+    return json.decode(response.body);
   }
 
-  Future<void> saveProfile({
+  Future<void> updateProfile({
     required String token,
     required Map<String, dynamic> data,
   }) async {
-    http.Response response = await client.post(
+    await client.post(
       Uri.parse("${url}profile"),
       headers: {
         "Authorization": "Bearer $token",
@@ -86,21 +84,13 @@ class AuthService {
       },
       body: json.encode(data),
     );
-
-    if (response.statusCode >= 300) {
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        throw ValidationException.fromErrorResponse(response.body);
-      }
-
-      throw HttpException(response.body);
-    }
   }
 
   Future<void> updatePassword({
     required String token,
     required Map<String, dynamic> data,
   }) async {
-    http.Response response = await client.put(
+    await client.put(
       Uri.parse("${url}password"),
       headers: {
         "Authorization": "Bearer $token",
@@ -108,14 +98,6 @@ class AuthService {
       },
       body: json.encode(data),
     );
-
-    if (response.statusCode >= 300) {
-      if (response.statusCode == HttpStatus.unprocessableEntity) {
-        throw ValidationException.fromErrorResponse(response.body);
-      }
-
-      throw HttpException(response.body);
-    }
   }
 
   Future<String> _getDeviceName() async {
@@ -138,13 +120,31 @@ class AuthService {
     return "";
   }
 
-  Future<void> _saveUserInfo(String body) async {
-    Map<String, dynamic> map = json.decode(body);
+  Future<bool> isTokenExpired() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String token = map["token"];
-    String expiresAt = map["expires_at"];
+    String? expiresAt = prefs.getString(LocalStorageKey.expiresAt.value);
+
+    if (expiresAt == null) {
+      return true;
+    }
+
+    DateTime date = DateTime.parse(expiresAt);
+
+    if (DateTime.now().isAfter(date)) {
+      _deleteUserInfo();
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<void> _saveUserInfo(Map<String, dynamic> body) async {
+    String token = body["token"] ?? "";
+    String expiresAt = body["expires_at"] ?? "";
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     prefs.setString(LocalStorageKey.accessToken.value, token);
     prefs.setString(LocalStorageKey.expiresAt.value, expiresAt);
   }

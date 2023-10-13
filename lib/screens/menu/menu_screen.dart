@@ -51,7 +51,7 @@ class MenuScreen extends StatelessWidget {
             ),
             ...MenuItems.getAll().map(buildMenuItem),
             const SizedBox(height: 100),
-            const LogoutButton(),
+            LogoutButton(),
             const Spacer(
               flex: 2,
             ),
