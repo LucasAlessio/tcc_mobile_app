@@ -8,11 +8,9 @@ import 'package:tcc/services/auth_service.dart';
 part 'register_states.dart';
 
 class RegisterCubit extends Cubit<RegisterStates?> {
-  AuthService service;
+  final AuthService service = AuthService();
 
-  RegisterCubit()
-      : service = AuthService(),
-        super(null);
+  RegisterCubit() : super(null);
 
   Future<void> register({
     required Map<String, dynamic> data,

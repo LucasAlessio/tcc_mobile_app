@@ -9,11 +9,9 @@ import 'package:tcc/services/auth_service.dart';
 part 'update_password_states.dart';
 
 class UpdatePasswordCubit extends Cubit<UpdatePasswordStates?> {
-  AuthService service;
+  final AuthService service = AuthService();
 
-  UpdatePasswordCubit()
-      : service = AuthService(),
-        super(null);
+  UpdatePasswordCubit() : super(null);
 
   Future<void> updatePassword({
     required String token,

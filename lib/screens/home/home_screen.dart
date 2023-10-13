@@ -30,7 +30,10 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+        padding: const EdgeInsets.only(
+          top: 8,
+          bottom: 8,
+        ),
         child: BlocListener<QuestionnairesCubit, QuestionnairesStates?>(
           bloc: _bloc,
           listener: (context, state) {
@@ -48,10 +51,7 @@ class HomeScreen extends StatelessWidget {
                     itemCount: 3,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          bottom: 8,
-                        ),
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                         child: ListTile(
                           title: const Text("##############"),
                           subtitle:
@@ -81,10 +81,7 @@ class HomeScreen extends StatelessWidget {
                 return ListView.builder(
                   itemCount: !state.isEmpty ? state.data.length : 0,
                   itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(
-                      top: 8,
-                      bottom: 8,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                     child: ListTile(
                       title: Text(state.data[index].name),
                       subtitle: Text(state.data[index].description),

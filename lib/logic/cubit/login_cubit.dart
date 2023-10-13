@@ -8,11 +8,9 @@ import 'package:tcc/services/auth_service.dart';
 part 'login_states.dart';
 
 class LoginCubit extends Cubit<LoginStates?> {
-  AuthService service;
+  final AuthService service = AuthService();
 
-  LoginCubit()
-      : service = AuthService(),
-        super(null);
+  LoginCubit() : super(null);
 
   Future<void> login({
     required Map<String, dynamic> data,

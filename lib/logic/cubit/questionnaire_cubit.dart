@@ -8,11 +8,9 @@ import 'package:tcc/services/questionnaires_service.dart';
 part 'questionnaire_states.dart';
 
 class QuestionnaireCubit extends Cubit<QuestionnaireStates?> {
-  QuestionnairesService service;
+  final QuestionnairesService service = QuestionnairesService();
 
-  QuestionnaireCubit()
-      : service = QuestionnairesService(),
-        super(null);
+  QuestionnaireCubit() : super(null);
 
   Future<void> getQuestionnaire({
     required int id,

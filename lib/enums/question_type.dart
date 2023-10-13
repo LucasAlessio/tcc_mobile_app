@@ -8,12 +8,16 @@ enum QuestionType {
   const QuestionType(this.value);
 
   static QuestionType getFromValue(String value) {
-    Map<String, QuestionType> map = {
-      QuestionType.shortText.value: QuestionType.shortText,
-      QuestionType.longText.value: QuestionType.longText,
-      QuestionType.choice.value: QuestionType.choice,
-    };
+    Map<String, QuestionType> values = QuestionType.values.fold(
+      {},
+      (previousValue, element) {
+        return {
+          ...previousValue,
+          element.value: element,
+        };
+      },
+    );
 
-    return map[value] ?? QuestionType.choice;
+    return values[value] ?? QuestionType.shortText;
   }
 }

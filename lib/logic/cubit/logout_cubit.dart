@@ -8,11 +8,9 @@ import 'package:tcc/services/auth_service.dart';
 part 'logout_states.dart';
 
 class LogoutCubit extends Cubit<LogoutStates?> {
-  AuthService service;
+  final AuthService service = AuthService();
 
-  LogoutCubit()
-      : service = AuthService(),
-        super(null);
+  LogoutCubit() : super(null);
 
   Future<void> logout({
     required String token,

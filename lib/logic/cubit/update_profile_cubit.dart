@@ -9,11 +9,9 @@ import 'package:tcc/services/auth_service.dart';
 part 'update_profile_states.dart';
 
 class UpdateProfileCubit extends Cubit<UpdateProfileStates?> {
-  AuthService service;
+  final AuthService service = AuthService();
 
-  UpdateProfileCubit()
-      : service = AuthService(),
-        super(null);
+  UpdateProfileCubit() : super(null);
 
   Future<void> saveProfile({
     required String token,

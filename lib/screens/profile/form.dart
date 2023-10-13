@@ -45,6 +45,9 @@ class Form extends StatelessWidget {
                     thickness: 1,
                   ),
                 ),
+                const common.Spacer(
+                  height: 8,
+                ),
                 FormBuilderTextField(
                   name: 'name',
                   decoration: const InputDecoration(
