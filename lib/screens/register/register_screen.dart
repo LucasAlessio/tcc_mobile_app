@@ -9,14 +9,11 @@ import 'package:tcc/enums/family_income.dart';
 import 'package:tcc/enums/gender.dart';
 import 'package:tcc/enums/marital_status.dart';
 import 'package:tcc/enums/schooling.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/register_cubit.dart';
-import 'package:tcc/services/auth_service.dart';
 
 class RegisterScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormBuilderState>();
   final RegisterCubit _bloc = RegisterCubit();
-  final AuthService authService = AuthService();
 
   RegisterScreen({Key? key}) : super(key: key);
 
@@ -28,9 +25,6 @@ class RegisterScreen extends StatelessWidget {
         bloc: _bloc,
         listener: (context, state) {
           if (state is RegisterSuccess) {
-            AppDataCubit appData = context.read<AppDataCubit>();
-            appData.loadData();
-
             Navigator.pushReplacementNamed(context, '/');
           }
 

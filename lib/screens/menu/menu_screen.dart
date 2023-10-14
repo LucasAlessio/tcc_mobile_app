@@ -46,15 +46,11 @@ class MenuScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Spacer(
-              flex: 2,
-            ),
+            const Spacer(flex: 2),
             ...MenuItems.getAll().map(buildMenuItem),
-            const SizedBox(height: 100),
+            const SizedBox(height: 75),
             LogoutButton(),
-            const Spacer(
-              flex: 2,
-            ),
+            const Spacer(flex: 2),
           ],
         ),
       ),

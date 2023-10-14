@@ -52,7 +52,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
   Widget getScreen() {
     Map<MenuItem, Widget> screens = {
-      MenuItems.profile: ProfileScreen(),
+      MenuItems.profile: const ProfileScreen(),
       MenuItems.security: const PasswordScreen(),
       MenuItems.about: const AboutScreen(),
     };

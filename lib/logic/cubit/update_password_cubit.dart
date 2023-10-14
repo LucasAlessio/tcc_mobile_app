@@ -13,17 +13,11 @@ class UpdatePasswordCubit extends Cubit<UpdatePasswordStates?> {
 
   UpdatePasswordCubit() : super(null);
 
-  Future<void> updatePassword({
-    required String token,
-    required Map<String, dynamic> data,
-  }) async {
+  Future<void> updatePassword({required Map<String, dynamic> data}) async {
     emit(UpdatePasswordLoading());
 
     try {
-      await service.updatePassword(
-        token: token,
-        data: data,
-      );
+      await service.updatePassword(data: data);
       emit(UpdatePasswordSuccess());
     } on ValidationException catch (error) {
       emit(UpdatePasswordValidationError(error.errors));

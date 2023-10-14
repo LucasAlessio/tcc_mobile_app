@@ -3,22 +3,25 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:tcc/exceptions/unauthorized_exception.dart';
+import 'package:tcc/logic/preferences/auth_preferences.dart';
 import 'package:tcc/services/auth_service.dart';
 
 part 'logout_states.dart';
 
 class LogoutCubit extends Cubit<LogoutStates?> {
   final AuthService service = AuthService();
+  final AuthPreferences preferences = AuthPreferences();
 
   LogoutCubit() : super(null);
 
-  Future<void> logout({
-    required String token,
-  }) async {
+  Future<void> logout() async {
     emit(LogoutLoading());
 
     try {
-      await service.logout(token: token);
+      await service.logout();
+
+      preferences.deleteAuthData();
+
       emit(LogoutSuccess());
     } on UnauthorizedException catch (error) {
       emit(LogoutError(error.message, unauthorized: true));

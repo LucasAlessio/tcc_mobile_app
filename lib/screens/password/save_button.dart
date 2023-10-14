@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/update_password_cubit.dart';
 
 class SaveButton extends StatelessWidget {
@@ -94,7 +93,7 @@ class SaveButton extends StatelessWidget {
           return ElevatedButton(
             onPressed: () {
               if (_formKey.currentState?.saveAndValidate() ?? false) {
-                saveProfile(context);
+                saveProfile();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -112,14 +111,8 @@ class SaveButton extends StatelessWidget {
     );
   }
 
-  void saveProfile(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
+  void saveProfile() {
     _bloc.updatePassword(
-      token: data.token,
       data: _formKey.currentState?.value ?? {},
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tcc/components/alert.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/logout_cubit.dart';
 
 class LogoutButton extends StatelessWidget {
@@ -17,10 +16,7 @@ class LogoutButton extends StatelessWidget {
         bloc: _bloc,
         listener: (context, state) {
           if (state is LogoutSuccess) {
-            AppDataCubit appData = context.read<AppDataCubit>();
-            appData.clearData();
-
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.pushReplacementNamed(context, 'login');
           }
 
           if (state is LogoutError) {
@@ -60,7 +56,7 @@ class LogoutButton extends StatelessWidget {
 
             return OutlinedButton(
               onPressed: () {
-                logout(context);
+                logout();
               },
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
@@ -76,12 +72,7 @@ class LogoutButton extends StatelessWidget {
     );
   }
 
-  void logout(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    _bloc.logout(token: data.token);
+  void logout() {
+    _bloc.logout();
   }
 }

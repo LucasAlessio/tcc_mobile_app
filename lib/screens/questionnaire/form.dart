@@ -88,7 +88,7 @@ class Form extends StatelessWidget {
                   return const SizedBox.shrink();
                 }
                 return Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
                   child: SizedBox(
                     width: double.infinity,
                     child: AnswerButton(

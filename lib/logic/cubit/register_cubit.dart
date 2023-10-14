@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:tcc/exceptions/validation_exception.dart';
+import 'package:tcc/logic/preferences/auth_preferences.dart';
+import 'package:tcc/models/user.dart';
 import 'package:tcc/services/auth_service.dart';
 
 part 'register_states.dart';
 
 class RegisterCubit extends Cubit<RegisterStates?> {
   final AuthService service = AuthService();
+  final AuthPreferences preferences = AuthPreferences();
 
   RegisterCubit() : super(null);
 
@@ -18,7 +21,10 @@ class RegisterCubit extends Cubit<RegisterStates?> {
     emit(RegisterLoading());
 
     try {
-      await service.register(data: data);
+      User user = await service.register(data: data);
+
+      preferences.saveAuthData(user: user);
+
       emit(RegisterSuccess());
     } on ValidationException catch (error) {
       emit(RegisterValidationError(error.errors));

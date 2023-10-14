@@ -14,16 +14,12 @@ class UpdateProfileCubit extends Cubit<UpdateProfileStates?> {
   UpdateProfileCubit() : super(null);
 
   Future<void> saveProfile({
-    required String token,
     required Map<String, dynamic> data,
   }) async {
     emit(UpdateProfileLoading());
 
     try {
-      await service.updateProfile(
-        token: token,
-        data: data,
-      );
+      await service.updateProfile(data: data);
       emit(UpdateProfileSuccess());
     } on ValidationException catch (error) {
       emit(UpdateProfileValidationError(error.errors));

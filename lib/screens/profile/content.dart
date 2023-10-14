@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
 import 'package:tcc/components/error_callout.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/profile_cubit.dart';
 import 'package:tcc/screens/profile/form.dart' as form_profile;
 
@@ -50,12 +49,7 @@ class Content extends StatelessWidget {
   }
 
   void getProfile(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    final ProfileCubit bloc = context.read<ProfileCubit>();
-    bloc.getProfile(token: data.token);
+    final ProfileCubit bloc = BlocProvider.of<ProfileCubit>(context);
+    bloc.getProfile();
   }
 }

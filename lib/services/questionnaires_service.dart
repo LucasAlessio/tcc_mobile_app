@@ -12,12 +12,11 @@ class QuestionnairesService {
 
   static const String resource = "questionnaires/";
 
-  Future<List<Questionnaire>> getAll({required String token}) async {
+  Future<List<Questionnaire>> getAll() async {
     http.Response response = await client.get(
       Uri.parse("$url$resource"),
       headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
     );
 
@@ -31,14 +30,10 @@ class QuestionnairesService {
     return questionnaires;
   }
 
-  Future<Questionnaire> getById({
-    required int id,
-    required String token,
-  }) async {
+  Future<Questionnaire> getById(int id) async {
     http.Response response = await client.get(
       Uri.parse("$url$resource$id"),
       headers: {
-        "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
     );
@@ -70,14 +65,12 @@ class QuestionnairesService {
 
   Future<void> answer({
     required int id,
-    required String token,
     required Map<String, dynamic> data,
   }) async {
     await client.post(
       Uri.parse("${url}questionnaires/$id/answer/"),
       headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: json.encode(data),
     );

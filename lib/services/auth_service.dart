@@ -3,8 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tcc/enums/local_storage_key.dart';
+import 'package:tcc/models/user.dart';
 import 'package:tcc/services/web_client.dart';
 
 class AuthService {
@@ -12,7 +11,7 @@ class AuthService {
   http.Client client = WebClient.client;
   http.Client unauthorizedClient = WebClient.unauthorizedClient;
 
-  Future<void> login({required Map<String, dynamic> data}) async {
+  Future<User> login({required Map<String, dynamic> data}) async {
     Map<String, dynamic> body = {
       ...data,
       'device_name': await _getDeviceName(),
@@ -26,11 +25,10 @@ class AuthService {
       body: json.encode(body),
     );
 
-    Map<String, dynamic> r = json.decode(response.body);
-    await _saveUserInfo(r);
+    return User.fromMap(json.decode(response.body));
   }
 
-  Future<void> register({required Map<String, dynamic> data}) async {
+  Future<User> register({required Map<String, dynamic> data}) async {
     Map<String, dynamic> body = {
       ...data,
       'device_name': await _getDeviceName(),
@@ -44,27 +42,22 @@ class AuthService {
       body: json.encode(body),
     );
 
-    Map<String, dynamic> r = json.decode(response.body);
-    await _saveUserInfo(r);
+    return User.fromMap(json.decode(response.body));
   }
 
-  Future<void> logout({required String token}) async {
+  Future<void> logout() async {
     await client.post(
       Uri.parse("${url}logout"),
       headers: {
-        "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
     );
-
-    await _deleteUserInfo();
   }
 
-  Future<Map<String, dynamic>> getProfile({required String token}) async {
+  Future<Map<String, dynamic>> getProfile() async {
     http.Response response = await client.get(
       Uri.parse("${url}profile"),
       headers: {
-        "Authorization": "Bearer $token",
         "Content-Type": "application/json",
       },
     );
@@ -72,29 +65,21 @@ class AuthService {
     return json.decode(response.body);
   }
 
-  Future<void> updateProfile({
-    required String token,
-    required Map<String, dynamic> data,
-  }) async {
+  Future<void> updateProfile({required Map<String, dynamic> data}) async {
     await client.post(
       Uri.parse("${url}profile"),
       headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: json.encode(data),
     );
   }
 
-  Future<void> updatePassword({
-    required String token,
-    required Map<String, dynamic> data,
-  }) async {
+  Future<void> updatePassword({required Map<String, dynamic> data}) async {
     await client.put(
       Uri.parse("${url}password"),
       headers: {
-        "Authorization": "Bearer $token",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: json.encode(data),
     );
@@ -118,41 +103,5 @@ class AuthService {
     }
 
     return "";
-  }
-
-  Future<bool> isTokenExpired() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    String? expiresAt = prefs.getString(LocalStorageKey.expiresAt.value);
-
-    if (expiresAt == null) {
-      return true;
-    }
-
-    DateTime date = DateTime.parse(expiresAt);
-
-    if (DateTime.now().isAfter(date)) {
-      _deleteUserInfo();
-      return true;
-    }
-
-    return false;
-  }
-
-  Future<void> _saveUserInfo(Map<String, dynamic> body) async {
-    String token = body["token"] ?? "";
-    String expiresAt = body["expires_at"] ?? "";
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.setString(LocalStorageKey.accessToken.value, token);
-    prefs.setString(LocalStorageKey.expiresAt.value, expiresAt);
-  }
-
-  Future<void> _deleteUserInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.remove(LocalStorageKey.accessToken.value);
-    prefs.remove(LocalStorageKey.expiresAt.value);
   }
 }

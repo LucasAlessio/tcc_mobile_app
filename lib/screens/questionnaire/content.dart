@@ -4,7 +4,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
 import 'package:tcc/components/error_callout.dart';
 import 'package:tcc/enums/question_type.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/questionnaire_cubit.dart';
 import 'package:tcc/models/alternative.dart';
 import 'package:tcc/models/question.dart';
@@ -24,7 +23,7 @@ class Content extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getQuestionnaire(context);
+    getQuestionnaire();
 
     return BlocListener<QuestionnaireCubit, QuestionnaireStates?>(
       bloc: _bloc,
@@ -91,15 +90,7 @@ class Content extends StatelessWidget {
     );
   }
 
-  void getQuestionnaire(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    _bloc.getQuestionnaire(
-      id: id,
-      token: data.token,
-    );
+  void getQuestionnaire() {
+    _bloc.getQuestionnaire(id: id);
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
 import 'package:tcc/logic/cubit/answer_cubit.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 
 class AnswerButton extends StatelessWidget {
   final int id;
@@ -112,15 +111,9 @@ class AnswerButton extends StatelessWidget {
   }
 
   void answer(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    final AnswerCubit bloc = context.read<AnswerCubit>();
+    final AnswerCubit bloc = BlocProvider.of<AnswerCubit>(context);
     bloc.answer(
       id: id,
-      token: data.token,
       data: convertToNestedObject(formKey.currentState?.value ?? {}),
     );
   }

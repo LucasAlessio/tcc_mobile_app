@@ -1,9 +1,9 @@
 import "package:http/http.dart" as http;
 import 'package:http_interceptor/http/intercepted_client.dart';
-import 'package:tcc/services/authorization_interceptor.dart';
-import 'package:tcc/services/map_response_interceptor.dart';
+import 'package:tcc/services/interceptors/authorization_interceptor.dart';
+import 'package:tcc/services/interceptors/map_response_interceptor.dart';
 
-import 'logging_interceptor.dart';
+import 'interceptors/logging_interceptor.dart';
 
 class WebClient {
   static const String url = "http://10.0.2.2:8000/api/";

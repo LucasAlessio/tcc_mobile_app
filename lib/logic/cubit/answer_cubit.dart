@@ -15,7 +15,6 @@ class AnswerCubit extends Cubit<AnswerStates?> {
 
   Future<void> answer({
     required int id,
-    required String token,
     required Map<String, dynamic> data,
   }) async {
     emit(AnswerLoading());
@@ -23,7 +22,6 @@ class AnswerCubit extends Cubit<AnswerStates?> {
     try {
       await service.answer(
         id: id,
-        token: token,
         data: data,
       );
       emit(AnswerSuccess());

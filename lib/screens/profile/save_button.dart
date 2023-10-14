@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/update_profile_cubit.dart';
 
 class SaveButton extends StatelessWidget {
@@ -109,14 +108,9 @@ class SaveButton extends StatelessWidget {
   }
 
   void saveProfile(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    final UpdateProfileCubit bloc = context.read<UpdateProfileCubit>();
+    final UpdateProfileCubit bloc =
+        BlocProvider.of<UpdateProfileCubit>(context);
     bloc.saveProfile(
-      token: data.token,
       data: _formKey.currentState?.value ?? {},
     );
   }

@@ -12,11 +12,11 @@ class QuestionnairesCubit extends Cubit<QuestionnairesStates?> {
 
   QuestionnairesCubit() : super(null);
 
-  Future<void> getQuestionnaires({required String token}) async {
+  Future<void> getQuestionnaires() async {
     emit(QuestionnairesLoading());
 
     try {
-      List<Questionnaire> data = await service.getAll(token: token);
+      List<Questionnaire> data = await service.getAll();
       emit(QuestionnairesSuccess(data));
     } on UnauthorizedException catch (error) {
       emit(QuestionnairesError(error.message, unauthorized: true));

@@ -11,11 +11,11 @@ class ProfileCubit extends Cubit<ProfileStates?> {
 
   ProfileCubit() : super(null);
 
-  Future<void> getProfile({required String token}) async {
+  Future<void> getProfile() async {
     emit(ProfileLoading());
 
     try {
-      Map<String, dynamic> data = await service.getProfile(token: token);
+      Map<String, dynamic> data = await service.getProfile();
       emit(ProfileSuccess(data));
     } on UnauthorizedException catch (error) {
       emit(ProfileError(error.message, unauthorized: true));

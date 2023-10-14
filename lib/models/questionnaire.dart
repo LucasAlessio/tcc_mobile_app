@@ -27,12 +27,14 @@ class Questionnaire {
         updatedAt = DateTime.now();
 
   Questionnaire.fromMap(Map<String, dynamic> map)
-      : id = map["id"],
-        name = map["name"],
-        description = map["description"],
-        recurrence = map["recurrence"],
-        createdAt = DateTime.parse(map["created_at"]),
-        updatedAt = DateTime.parse(map["updated_at"]);
+      : id = map["id"] ?? "",
+        name = map["name"] ?? "",
+        description = map["description"] ?? "",
+        recurrence = map["recurrence"] ?? "",
+        createdAt =
+            DateTime.parse(map["created_at"] ?? DateTime.now().toString()),
+        updatedAt =
+            DateTime.parse(map["updated_at"] ?? DateTime.now().toString());
 
   @override
   String toString() {

@@ -11,6 +11,6 @@ Future<void> alertUnauthorized({
     message: message,
     buttonText: "Logar novamente",
   ).then((value) {
-    Navigator.pushReplacementNamed(context, '/login');
+    Navigator.pushReplacementNamed(context, 'login');
   });
 }

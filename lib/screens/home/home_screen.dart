@@ -4,7 +4,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
 import 'package:tcc/components/error_callout.dart';
 import 'package:tcc/components/menu_widget.dart';
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/questionnaires_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getQuestionnaires(context);
+    getQuestionnaires();
 
     return Scaffold(
       appBar: AppBar(
@@ -22,9 +21,7 @@ class HomeScreen extends StatelessWidget {
         leading: const MenuWidget(),
         actions: [
           IconButton(
-            onPressed: () {
-              getQuestionnaires(context);
-            },
+            onPressed: getQuestionnaires,
             icon: const Icon(Icons.refresh),
           )
         ],
@@ -45,7 +42,6 @@ class HomeScreen extends StatelessWidget {
             bloc: _bloc,
             builder: (context, state) {
               if (state is QuestionnairesLoading) {
-                // return const CircularProgressIndicator(); // Mostra o loader enquanto os dados estão sendo carregados
                 return Skeletonizer(
                   child: ListView.builder(
                     itemCount: 3,
@@ -115,12 +111,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void getQuestionnaires(BuildContext context) {
-    AppDataCubit appData = context.read<AppDataCubit>();
-    AppDataStates? data = appData.state;
-
-    if (data is! AppDataAuthenticated) return;
-
-    _bloc.getQuestionnaires(token: data.token);
+  void getQuestionnaires() {
+    _bloc.getQuestionnaires();
   }
 }

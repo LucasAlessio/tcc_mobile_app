@@ -5,7 +5,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tcc/components/alert.dart';
 import 'package:tcc/components/spacer.dart' as common;
-import 'package:tcc/logic/cubit/app_data_cubit.dart';
 import 'package:tcc/logic/cubit/login_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -28,9 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
         bloc: _bloc,
         listener: (context, state) {
           if (state is LoginSuccess) {
-            AppDataCubit appData = context.read<AppDataCubit>();
-            appData.loadData();
-
             Navigator.pushReplacementNamed(context, '/');
           }
 
@@ -194,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.pushNamed(context, '/register');
+                                Navigator.pushNamed(context, 'register');
                               },
                           ),
                         ],

@@ -14,12 +14,11 @@ class QuestionnaireCubit extends Cubit<QuestionnaireStates?> {
 
   Future<void> getQuestionnaire({
     required int id,
-    required String token,
   }) async {
     emit(QuestionnaireLoading());
 
     try {
-      Questionnaire data = await service.getById(id: id, token: token);
+      Questionnaire data = await service.getById(id);
       emit(QuestionnaireSuccess(data));
     } on UnauthorizedException catch (error) {
       emit(QuestionnaireError(error.message, unauthorized: true));
