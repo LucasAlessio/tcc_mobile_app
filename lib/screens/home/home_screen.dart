@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:tcc/components/alert_unauthorized.dart';
 import 'package:tcc/components/error_callout.dart';
 import 'package:tcc/components/menu_widget.dart';
+import 'package:tcc/components/spacer.dart' as common;
 import 'package:tcc/logic/cubit/questionnaires_cubit.dart';
+import 'package:tcc/models/questionnaire.dart';
 
 class HomeScreen extends StatelessWidget {
   final QuestionnairesCubit _bloc = QuestionnairesCubit();
@@ -78,27 +81,7 @@ class HomeScreen extends StatelessWidget {
                   itemCount: !state.isEmpty ? state.data.length : 0,
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: ListTile(
-                      title: Text(state.data[index].name),
-                      subtitle: Text(state.data[index].description),
-                      contentPadding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
-                      tileColor: Colors.white,
-                      dense: false,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      onTap: () {
-                        Navigator.pushNamed(context, 'questionnaire',
-                            arguments: {
-                              "id": state.data[index].id,
-                              "name": state.data[index].name,
-                            });
-                      },
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        size: 40,
-                      ),
-                    ),
+                    child: Tile(questionnaire: state.data[index]),
                   ),
                 );
               }
@@ -113,5 +96,79 @@ class HomeScreen extends StatelessWidget {
 
   void getQuestionnaires() {
     _bloc.getQuestionnaires();
+  }
+}
+
+class Tile extends StatelessWidget {
+  final Questionnaire questionnaire;
+  const Tile({Key? key, required this.questionnaire}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (questionnaire.disabled) {
+      List<Widget> content = [
+        Opacity(
+          opacity: .3,
+          child: Text(questionnaire.description),
+        ),
+      ];
+
+      if (questionnaire.disabledUntil != null) {
+        DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+
+        content.addAll([
+          const common.Spacer(height: 8),
+          Text(
+            "Indisponível até ${dateFormat.format(questionnaire.disabledUntil!.toLocal())}",
+            style: const TextStyle(
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ]);
+      }
+
+      return ListTile(
+        title: Opacity(
+          opacity: .3,
+          child: Text(questionnaire.name),
+        ),
+        subtitle: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: content,
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+        tileColor: const Color.fromARGB(156, 255, 255, 255),
+        dense: false,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      );
+    }
+
+    return ListTile(
+      title: Text(questionnaire.name),
+      subtitle: Text(questionnaire.description),
+      contentPadding: const EdgeInsets.fromLTRB(20, 8, 8, 8),
+      tileColor: Colors.white,
+      dense: false,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          'questionnaire',
+          arguments: {
+            "id": questionnaire.id,
+            "name": questionnaire.name,
+          },
+        );
+      },
+      trailing: const Icon(
+        Icons.chevron_right,
+        size: 40,
+      ),
+    );
   }
 }

@@ -23,7 +23,7 @@ class RegisterCubit extends Cubit<RegisterStates?> {
     try {
       User user = await service.register(data: data);
 
-      preferences.saveAuthData(user: user);
+      await preferences.saveAuthData(user: user);
 
       emit(RegisterSuccess());
     } on ValidationException catch (error) {

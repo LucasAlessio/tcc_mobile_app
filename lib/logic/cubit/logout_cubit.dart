@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:tcc/exceptions/unauthorized_exception.dart';
 import 'package:tcc/logic/preferences/auth_preferences.dart';
+import 'package:tcc/logic/tasks/auth_task_scheduler.dart';
 import 'package:tcc/services/auth_service.dart';
 
 part 'logout_states.dart';
@@ -11,6 +12,7 @@ part 'logout_states.dart';
 class LogoutCubit extends Cubit<LogoutStates?> {
   final AuthService service = AuthService();
   final AuthPreferences preferences = AuthPreferences();
+  final AuthTaskScheduler taskManager = AuthTaskScheduler();
 
   LogoutCubit() : super(null);
 
@@ -20,7 +22,8 @@ class LogoutCubit extends Cubit<LogoutStates?> {
     try {
       await service.logout();
 
-      preferences.deleteAuthData();
+      await preferences.deleteAuthData();
+      await taskManager.cancelRefreshToken();
 
       emit(LogoutSuccess());
     } on UnauthorizedException catch (error) {

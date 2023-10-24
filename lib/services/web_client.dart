@@ -10,17 +10,17 @@ class WebClient {
 
   static http.Client client = InterceptedClient.build(
     interceptors: [
-      LoggingInterceptor(),
       AuthorizationInterceptor(),
       MapResponseInterceptor(),
+      LoggingInterceptor(),
     ],
     requestTimeout: const Duration(minutes: 1),
   );
 
   static http.Client unauthorizedClient = InterceptedClient.build(
     interceptors: [
-      LoggingInterceptor(),
       MapResponseInterceptor(),
+      LoggingInterceptor(),
     ],
     requestTimeout: const Duration(minutes: 1),
   );

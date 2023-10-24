@@ -8,11 +8,13 @@ class AuthPreferences extends Preferences {
     return token;
   }
 
-  void saveAuthData({
+  Future<void> saveAuthData({
     required User user,
   }) async {
     await saveString(LocalStorageKey.accessToken, user.token);
     await saveString(LocalStorageKey.expiresAt, user.expiresAt.toString());
+
+    await reload();
   }
 
   Future<void> deleteAuthData() async {
@@ -29,7 +31,6 @@ class AuthPreferences extends Preferences {
 
     DateTime date = DateTime.parse(expiresAt);
     if (DateTime.now().isAfter(date)) {
-      deleteAuthData();
       return true;
     }
 

@@ -26,13 +26,16 @@ class ChoiceInput extends StatelessWidget {
         enabledBorder: InputBorder.none,
         errorBorder: InputBorder.none,
         contentPadding: EdgeInsets.zero,
-        isDense: true,
-        isCollapsed: true,
+        // isDense: true,
+        // isCollapsed: true,
       ),
       options: question.alternatives.map((e) {
         return FormBuilderFieldOption(
           value: e.id,
-          child: Text(e.description),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+            child: Text(e.description),
+          ),
         );
       }).toList(),
       orientation: OptionsOrientation.vertical,

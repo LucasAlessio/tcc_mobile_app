@@ -54,13 +54,20 @@ class RegisterScreen extends StatelessWidget {
             key: _formKey,
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 32, bottom: 32),
+                padding: const EdgeInsets.only(top: 72, bottom: 42),
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.psychology_outlined,
-                      size: 64,
-                      color: Theme.of(context).primaryColorLight,
+                    // Icon(
+                    //   Icons.psychology_outlined,
+                    //   size: 64,
+                    //   color: Theme.of(context).primaryColorLight,
+                    // ),
+                    // const common.Spacer(
+                    //   height: 40,
+                    // ),
+                    Image.asset('assets/icone.png', width: 50),
+                    const common.Spacer(
+                      height: 40,
                     ),
                     const Text(
                       "Crie sua conta",

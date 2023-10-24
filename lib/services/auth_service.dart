@@ -85,6 +85,20 @@ class AuthService {
     );
   }
 
+  Future<User> refreshLogin() async {
+    http.Response response = await client.post(
+      Uri.parse("${url}refresh"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: json.encode({
+        'device_name': await _getDeviceName(),
+      }),
+    );
+
+    return User.fromMap(json.decode(response.body));
+  }
+
   Future<String> _getDeviceName() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 

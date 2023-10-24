@@ -10,11 +10,9 @@ enum QuestionType {
   static QuestionType getFromValue(String value) {
     Map<String, QuestionType> values = QuestionType.values.fold(
       {},
-      (previousValue, element) {
-        return {
-          ...previousValue,
-          element.value: element,
-        };
+      (previousValue, element) => {
+        ...previousValue,
+        element.value: element,
       },
     );
 

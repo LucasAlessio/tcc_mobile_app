@@ -7,6 +7,8 @@ class Questionnaire {
   int recurrence;
   DateTime createdAt;
   DateTime updatedAt;
+  bool disabled;
+  DateTime? disabledUntil;
   final List<Question> _questions = [];
 
   Questionnaire({
@@ -14,6 +16,8 @@ class Questionnaire {
     required this.name,
     required this.description,
     required this.recurrence,
+    required this.disabled,
+    required this.disabledUntil,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,6 +27,7 @@ class Questionnaire {
         name = "",
         description = "",
         recurrence = 0,
+        disabled = false,
         createdAt = DateTime.now(),
         updatedAt = DateTime.now();
 
@@ -31,6 +36,11 @@ class Questionnaire {
         name = map["name"] ?? "",
         description = map["description"] ?? "",
         recurrence = map["recurrence"] ?? "",
+        disabled = !!(map["disabled"] ?? false),
+        disabledUntil = (!!(map["disabled"] ?? false) &&
+                (map["disabled_until"]?.toString() ?? "").isNotEmpty)
+            ? DateTime.parse(map["disabled_until"])
+            : null,
         createdAt =
             DateTime.parse(map["created_at"] ?? DateTime.now().toString()),
         updatedAt =

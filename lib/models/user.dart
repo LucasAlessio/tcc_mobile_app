@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 class User {
-  final String id;
+  final int id;
   final String name;
   final String token;
   final DateTime expiresAt;
@@ -12,9 +14,18 @@ class User {
   });
 
   User.fromMap(Map<String, dynamic> map)
-      : id = map["id"] ?? "",
-        name = map["name"] ?? "",
+      : id = map["user"]["id"] ?? 0,
+        name = map["user"]["name"] ?? "",
         token = map["token"] ?? "",
         expiresAt =
             DateTime.parse(map["expires_at"] ?? DateTime.now().toString());
+
+  @override
+  String toString() {
+    return json.encode({
+      id: id,
+      name: name,
+      token: token,
+    });
+  }
 }

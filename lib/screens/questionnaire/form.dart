@@ -60,7 +60,10 @@ class Form extends StatelessWidget {
                           Text(
                             e.value.description,
                             textAlign: TextAlign.start,
-                            style: const TextStyle(fontSize: 14),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           question.type == QuestionType.choice
                               ? const Divider(

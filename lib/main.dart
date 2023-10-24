@@ -1,10 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:tcc/Screens/Login/login_screen.dart';
 import 'package:tcc/config/app_keys.dart';
+import 'package:tcc/enums/task.dart';
 import 'package:tcc/logic/preferences/auth_preferences.dart';
+import 'package:tcc/logic/tasks/task_handler.dart';
 import 'package:tcc/notifications/flutter_notification_plugin.dart';
 import 'package:tcc/screens/app_drawer/app_drawer.dart';
 import 'package:tcc/screens/questionnaire/questionnaire_screen.dart';
@@ -15,33 +14,41 @@ import 'package:workmanager/workmanager.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
-    print("->---------------------[task]: $task");
-    print("->----------------[inputData]: $inputData");
-
-    print(
-        "->----------------[inputData]: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-
-    await NotificationService().initNotification();
-    tz.initializeTimeZones();
-
-    // NotificationService().scheduleNotification(
-    //   title: 'Scheduled Notification',
-    //   body: 'TESTE',
-    //   scheduledNotificationDateTime: DateTime.now(),
+  Workmanager().executeTask((name, inputData) async {
+    // print("->---------------------[task]: $task");
+    // print("->----------------[inputData]: $inputData");
+    //
+    // print(
+    //     "->----------------[inputData]: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    //
+    // await NotificationService().initNotification();
+    // tz.initializeTimeZones();
+    //
+    // // NotificationService().scheduleNotification(
+    // //   title: 'Scheduled Notification',
+    // //   body: 'TESTE',
+    // //   scheduledNotificationDateTime: DateTime.now(),
+    // // );
+    //
+    // await NotificationService().showNotification(
+    //   id: 0,
+    //   body: 'TESTE @',
+    //   payLoad: 'TESTE',
+    //   title: 'outra',
     // );
+    //
+    // Logger l = Logger();
+    // l.f('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    //
+    // return Future.value(true);
+    Task? task = Task.getFromName(name);
 
-    await NotificationService().showNotification(
-      id: 0,
-      body: 'TESTE @',
-      payLoad: 'TESTE',
-      title: 'outra',
-    );
+    if (task == null) {
+      return true;
+    }
 
-    Logger l = Logger();
-    l.f('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-
-    return Future.value(true);
+    TaskManager manager = TaskManager(task, inputData);
+    return await manager.handle();
   });
 }
 
@@ -55,6 +62,10 @@ void main() async {
 
   AuthPreferences preferences = AuthPreferences();
   bool authDataExpired = await preferences.isAuthExpired();
+
+  if (authDataExpired) {
+    preferences.deleteAuthData();
+  }
 
   runApp(App(
     loggedIn: !authDataExpired,

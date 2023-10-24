@@ -58,17 +58,21 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Icon(
-                      Icons.psychology_outlined,
-                      size: 64,
-                      color: Theme.of(context).primaryColorLight,
-                    ),
-                    const Text(
-                      "APP TCC SEM NOME",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    // Icon(
+                    //   Icons.psychology_outlined,
+                    //   size: 64,
+                    //   color: Theme.of(context).primaryColorLight,
+                    // ),
+                    // const Text(
+                    //   "APP TCC SEM NOME",
+                    //   style: TextStyle(
+                    //     fontSize: 24,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    Image.asset('assets/logo.png', width: 200),
+                    const common.Spacer(
+                      height: 40,
                     ),
                     const Padding(
                       padding: EdgeInsets.only(top: 8, bottom: 8),

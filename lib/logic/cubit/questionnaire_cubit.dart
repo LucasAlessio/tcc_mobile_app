@@ -19,6 +19,12 @@ class QuestionnaireCubit extends Cubit<QuestionnaireStates?> {
 
     try {
       Questionnaire data = await service.getById(id);
+
+      if (data.disabled) {
+        return emit(
+            QuestionnaireError("Instrumento indisponível para resolução."));
+      }
+
       emit(QuestionnaireSuccess(data));
     } on UnauthorizedException catch (error) {
       emit(QuestionnaireError(error.message, unauthorized: true));
@@ -28,7 +34,7 @@ class QuestionnaireCubit extends Cubit<QuestionnaireStates?> {
       emit(QuestionnaireError(
           "Verifique se o dispositivo está conectado à internet."));
     } catch (error) {
-      emit(QuestionnaireError("Ocorreu um erro ao carregar os instrumentos."));
+      emit(QuestionnaireError("Ocorreu um erro ao carregar o instrumento."));
     }
   }
 }

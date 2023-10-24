@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:tcc/exceptions/validation_exception.dart';
 import 'package:tcc/logic/preferences/auth_preferences.dart';
+import 'package:tcc/logic/tasks/auth_task_scheduler.dart';
 import 'package:tcc/models/user.dart';
 import 'package:tcc/services/auth_service.dart';
 
@@ -12,6 +13,7 @@ part 'login_states.dart';
 class LoginCubit extends Cubit<LoginStates?> {
   final AuthService service = AuthService();
   final AuthPreferences preferences = AuthPreferences();
+  final AuthTaskScheduler scheduler = AuthTaskScheduler();
 
   LoginCubit() : super(null);
 
@@ -23,7 +25,8 @@ class LoginCubit extends Cubit<LoginStates?> {
     try {
       User user = await service.login(data: data);
 
-      preferences.saveAuthData(user: user);
+      await preferences.saveAuthData(user: user);
+      await scheduler.scheduleRefreshToken();
 
       emit(LoginSuccess());
     } on ValidationException catch (error) {
