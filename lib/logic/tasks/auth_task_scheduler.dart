@@ -9,7 +9,7 @@ class AuthTaskScheduler extends TaskScheduler {
   Future<void> scheduleRefreshToken() async {
     String id = await preferences.saveRefreshTokenId();
 
-    schedule(
+    await schedule(
       id,
       Task.refreshToken,
       delay: Duration(days: delayRefreshTokenInDays),

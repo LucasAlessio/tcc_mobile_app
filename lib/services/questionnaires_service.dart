@@ -68,7 +68,7 @@ class QuestionnairesService {
     required Map<String, dynamic> data,
   }) async {
     await client.post(
-      Uri.parse("${url}questionnaires/$id/answer/"),
+      Uri.parse("$url$resource$id/answer"),
       headers: {
         "Content-Type": "application/json",
       },

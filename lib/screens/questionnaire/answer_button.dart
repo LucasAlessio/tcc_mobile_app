@@ -33,7 +33,7 @@ class AnswerButton extends StatelessWidget {
             showCloseIcon: true,
           ));
 
-          Navigator.of(context).pop();
+          Navigator.of(context).pop<bool>(true);
         }
 
         if (state is AnswerError) {

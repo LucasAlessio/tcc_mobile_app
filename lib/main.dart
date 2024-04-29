@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:tcc/Screens/Login/login_screen.dart';
 import 'package:tcc/config/app_keys.dart';
@@ -18,8 +20,7 @@ void callbackDispatcher() {
     // print("->---------------------[task]: $task");
     // print("->----------------[inputData]: $inputData");
     //
-    // print(
-    //     "->----------------[inputData]: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    // print("->----------------[inputData]: ");
     //
     // await NotificationService().initNotification();
     // tz.initializeTimeZones();
@@ -38,7 +39,7 @@ void callbackDispatcher() {
     // );
     //
     // Logger l = Logger();
-    // l.f('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    // l.f('Logger notification service');
     //
     // return Future.value(true);
     Task? task = Task.getFromName(name);
@@ -52,8 +53,23 @@ void callbackDispatcher() {
   });
 }
 
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // ByteData data =
+  //     await PlatformAssetBundle().load('assets/ca/lets-encrypt-r3.pem');
+  // SecurityContext.defaultContext
+  //     .setTrustedCertificatesBytes(data.buffer.asUint8List());
+  HttpOverrides.global = MyHttpOverrides();
 
   NotificationService().initNotification();
   tz.initializeTimeZones();
@@ -74,6 +90,7 @@ void main() async {
 
 class App extends StatelessWidget {
   final bool loggedIn;
+
   const App({
     super.key,
     required this.loggedIn,
@@ -100,7 +117,7 @@ class App extends StatelessWidget {
           final int id = arguments["id"] ?? 0;
           final String name = arguments["name"] ?? "";
 
-          return MaterialPageRoute(
+          return MaterialPageRoute<bool>(
             builder: (context) => QuestionnaireScreen(
               id: id,
               name: name,

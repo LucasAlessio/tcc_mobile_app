@@ -19,7 +19,7 @@ class LongTextInput extends StatelessWidget {
     if (question.type != QuestionType.longText) return const SizedBox.shrink();
 
     return FormBuilderTextField(
-      name: 'questions.$index.alternative',
+      name: 'questions.$index.comment',
       minLines: 4,
       maxLines: 8,
       decoration: const InputDecoration(

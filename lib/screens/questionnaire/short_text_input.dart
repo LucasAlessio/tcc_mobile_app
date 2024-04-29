@@ -19,7 +19,7 @@ class ShortTextInput extends StatelessWidget {
     if (question.type != QuestionType.shortText) return const SizedBox.shrink();
 
     return FormBuilderTextField(
-      name: 'questions.$index.alternative',
+      name: 'questions.$index.comment',
       decoration: const InputDecoration(
         hintText: 'Digite sua resposta',
       ),

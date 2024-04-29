@@ -77,11 +77,48 @@ class HomeScreen extends StatelessWidget {
               }
 
               if (state is QuestionnairesSuccess) {
+                if (state.isEmpty) {
+                  return SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.psychology_alt_outlined,
+                          size: 96,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
+                        const SizedBox(
+                          height: 32,
+                        ),
+                        const Text(
+                          'Nada de novo por aqui',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                        const Text(
+                          'Aguarde as atualizações de seu psicólogo',
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(
+                          height: 128,
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
                 return ListView.builder(
                   itemCount: !state.isEmpty ? state.data.length : 0,
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Tile(questionnaire: state.data[index]),
+                    child: Tile(
+                      questionnaire: state.data[index],
+                      bloc: _bloc,
+                    ),
                   ),
                 );
               }
@@ -101,7 +138,12 @@ class HomeScreen extends StatelessWidget {
 
 class Tile extends StatelessWidget {
   final Questionnaire questionnaire;
-  const Tile({Key? key, required this.questionnaire}) : super(key: key);
+  final QuestionnairesCubit bloc;
+  const Tile({
+    Key? key,
+    required this.questionnaire,
+    required this.bloc,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -156,14 +198,18 @@ class Tile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       onTap: () {
-        Navigator.pushNamed(
+        Navigator.pushNamed<bool>(
           context,
           'questionnaire',
           arguments: {
             "id": questionnaire.id,
             "name": questionnaire.name,
           },
-        );
+        ).then((value) {
+          if (value == true) {
+            bloc.getQuestionnaires();
+          }
+        });
       },
       trailing: const Icon(
         Icons.chevron_right,
